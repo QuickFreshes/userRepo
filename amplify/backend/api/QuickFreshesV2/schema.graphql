@@ -1,0 +1,97 @@
+enum TransportationModes {
+  TEMPO_VAN
+  BIKE
+}
+
+type Courier @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String!
+  sub: String!
+  lat: Float!
+  lng: Float!
+  transportationMode: TransportationModes!
+  address: String!
+  city: String!
+  phone_number: String!
+}
+
+enum OrderStatus {
+  NEW
+  PACKED
+  READY_FOR_PICKUP
+  PICKED_UP
+  COMPLETED
+  ACCEPTED
+}
+
+type OrderProduct @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  quantity: Int!
+  Product: Product @hasOne
+  orderID: ID! @index(name: "byOrder")
+}
+
+type Order @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  userID: ID! @index(name: "byUser")
+  Shop: Shop @hasOne
+  total: Float!
+  status: OrderStatus!
+  OrderProducts: [OrderProduct] @hasMany(indexName: "byOrder", fields: ["id"])
+  Courier: Courier @hasOne
+}
+
+type BasketProduct @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  quantity: Int!
+  Product: Product @hasOne
+  basketID: ID! @index(name: "byBasket")
+}
+
+type Basket @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  BasketProducts: [BasketProduct] @hasMany(indexName: "byBasket", fields: ["id"])
+  userID: ID! @index(name: "byUser")
+  shopID: ID! @index(name: "byShop")
+}
+
+type User @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String!
+  address: String!
+  city: String!
+  phone_number: AWSPhone!
+  lat: Float!
+  lng: Float!
+  sub: String!
+  Orders: [Order] @hasMany(indexName: "byUser", fields: ["id"])
+  Baskets: [Basket] @hasMany(indexName: "byUser", fields: ["id"])
+}
+
+type Shop @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String!
+  image: String!
+  deliveryFee: Float!
+  minDeliveryTime: Int!
+  maxDeliveryTime: Int!
+  rating: Float
+  address: String!
+  small_address: String!
+  location: String!
+  lat: Float!
+  lng: Float!
+  ShopType: String!
+  Products: [Product] @hasMany(indexName: "byShop", fields: ["id"])
+  Baskets: [Product] @hasMany(indexName: "byShop", fields: ["id"])
+}
+
+type Product @model @auth(rules: [{allow: public, operations: [create, read, update]}]) {
+  id: ID!
+  name: String!
+  image: String
+  description: String
+  price: Float!
+  shopID: ID! @index(name: "byShop")
+}
+ 

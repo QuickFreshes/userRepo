@@ -1,0 +1,20 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-quickfreshesv2-staging-131239-authRole",
+      "UnauthRoleArn": "arn:aws:iam::319689402644:role/amplify-quickfreshesv2-staging-131239-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::319689402644:role/amplify-quickfreshesv2-staging-131239-authRole",
+      "Region": "ap-south-1",
+      "DeploymentBucketName": "amplify-quickfreshesv2-staging-131239-deployment",
+      "UnauthRoleName": "amplify-quickfreshesv2-staging-131239-unauthRole",
+      "StackName": "amplify-quickfreshesv2-staging-131239",
+      "StackId": "arn:aws:cloudformation:ap-south-1:319689402644:stack/amplify-quickfreshesv2-staging-131239/eefb3170-a61f-11ed-9f0b-025a43c0aa8e",
+      "AmplifyAppId": "d186wprouo2edi"
+    },
+    "categories": {
+      "auth": {
+        "QuickFreshesV2": {}
+      }
+    }
+  }
+}
