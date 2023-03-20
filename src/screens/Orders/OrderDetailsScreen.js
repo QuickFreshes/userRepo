@@ -19,12 +19,12 @@ import { useOrderContext } from "../../contexts/OrderContext";
 import { useRoute } from "@react-navigation/native";
 import BasketProductItem from "../../components/BasketProductItem/BasketProductItem";
 // import ActivityQuickIndicator from "../../components/ActivityIndicator/ActivityQuickIndicator";
-const OrderDetailsScreen = () => {
+const OrderDetailsScreen = ({ id, shopName, shopType, rating, address }) => {
   const [order, setOrder] = useState();
   const [loadingTime, setLoadingTime] = useState(0);
   const { getOrder } = useOrderContext();
   const route = useRoute();
-  const id = route.params?.id;
+  // const id = route.params?.id;
 
   useEffect(() => {
     getOrder(id).then(setOrder);
@@ -56,6 +56,7 @@ const OrderDetailsScreen = () => {
       </View>
     );
   }
+  // console.log(shopType);
   return (
     <View style={{ backgroundColor: "#FCF3CF", flex: 1 }}>
       {/* <OrderDetailsHeader order={order} /> */}
@@ -81,8 +82,7 @@ const OrderDetailsScreen = () => {
           {/* StoreRoomHeader Starts */}
           <View style={{ marginLeft: 10, marginTop: 10 }}>
             <Text style={{ fontSize: 20, fontWeight: "bold", width: 260 }}>
-              {/* {order.name} */}
-              {route?.params?.shopName}
+              {shopName}
             </Text>
             <Text
               style={{
@@ -93,7 +93,7 @@ const OrderDetailsScreen = () => {
                 marginVertical: 5,
               }}
             >
-              {route?.params?.shopType}
+              {shopType}
             </Text>
             <Text
               style={{
@@ -103,7 +103,8 @@ const OrderDetailsScreen = () => {
                 width: 260,
               }}
             >
-              {route?.params?.address}
+              {/* {route?.params?.address} */}
+              {address}
             </Text>
           </View>
           {/* StoreRoomHeader Ends */}
@@ -132,7 +133,7 @@ const OrderDetailsScreen = () => {
                   marginRight: 5,
                 }}
               >
-                {route?.params?.rating?.toFixed(1)}
+                {rating?.toFixed(1)}
               </Text>
               <AntDesign name="star" size={22} color="#FFD700" />
             </View>
@@ -142,21 +143,7 @@ const OrderDetailsScreen = () => {
         </View>
         <ModeDelTimeOffers />
         <AdditionalDistanceFee />
-        {/* {!order ? (
-          <ActivityIndicator
-            color="black"
-            size="large"
-            style={styles.activityIndicator}
-          />
-        ) : ( */}
-        {/* <FlatList
-          data={order.PRoducts}
-          renderItem={({ item, index }) => (
-            <BasketProductItem Item={item} key={`item-${index}`} />
-          )}
-          keyExtractor={(item, index) => `item-${index}`}
-        /> */}
-        {/* )} */}
+
         {order && (
           <FlatList
             data={order.PRoducts}

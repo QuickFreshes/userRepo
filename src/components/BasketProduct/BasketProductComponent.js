@@ -13,9 +13,24 @@ import { BasketProduct } from "../../models";
 import { Product } from "../../models";
 const BasketProductComponent = ({ basketproduct }) => {
   const [quantity, setQuantity] = useState(basketproduct.quantity);
-  // const [qty, setqty] = useState(null);
   const [product, setProduct] = useState(null);
   const { onminus, onplus } = useBasketContext();
+
+  useEffect(() => {
+    const subscription = DataStore.observe(Product).subscribe((msg) => {
+      if (
+        msg.opType === "INSERT" ||
+        msg.opType === "UPDATE" ||
+        msg.opType === "DELETE"
+      ) {
+        DataStore.query(Product).then((products) => {
+          setProduct(products);
+        });
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const fetchProduct = async () => {
     try {
@@ -37,11 +52,6 @@ const BasketProductComponent = ({ basketproduct }) => {
     // return null; // you can display a loading indicator or message here
     return <ActivityIndicator size="large" color="#0000ff" />;
   }
-
-  // if (isLoading) {
-  //   return <ActivityIndicator size="large" color="#0000ff" />;
-  // }
-  // console.log(basketproduct);
 
   const onPlus = async () => {
     const updatedQuantity = quantity + 1;
@@ -104,7 +114,6 @@ const BasketProductComponent = ({ basketproduct }) => {
             size={40}
             color={"black"}
             onPress={onMinus}
-            // onPress={() => onMinus(basketproduct)}
           />
           <Text style={styles.quantity}>{quantity}</Text>
           <AntDesign
@@ -112,7 +121,6 @@ const BasketProductComponent = ({ basketproduct }) => {
             size={40}
             color={"black"}
             onPress={onPlus}
-            // onPress={() => onPlus(basketproduct)}
           />
         </View>
         <Text style={{ fontWeight: "600" }}>

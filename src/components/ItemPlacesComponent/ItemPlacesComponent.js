@@ -17,7 +17,7 @@ const ItemPlacesComponent = () => {
   // };
 
   return (
-    <View>
+    <View style={styles.card}>
       <Text style={{ fontSize: 20, fontWeight: "bold" }}>
         Buy from other cities
       </Text>
@@ -36,7 +36,7 @@ const ItemPlacesComponent = () => {
               })
             }
           >
-            <View style={{ margin: 4, alignItems: "center" }}>
+            <View style={styles.ItemPlaces}>
               <Image style={styles.MiddleImage} source={{ uri: item.image }} />
               <Text style={styles.textDesign1}>{item.name}</Text>
             </View>
@@ -50,10 +50,26 @@ const ItemPlacesComponent = () => {
 export default ItemPlacesComponent;
 
 const styles = StyleSheet.create({
+  ItemPlaces: {
+    margin: 4,
+    alignItems: "center",
+    backgroundColor: "white",
+    borderRadius: 10,
+    overflow: "hidden",
+    marginVertical: 10,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+  },
   textDesign1: {
     fontSize: 15,
     fontWeight: "600",
-    color: "gray",
+    color: "black",
     margin: 10,
     textAlign: "center",
   },
@@ -65,5 +81,39 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 35,
+    // -------------------------
+    backgroundColor: "white",
+    // borderRadius: 10,
+    overflow: "hidden",
+    marginVertical: 10,
+    elevation: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    margin: 6,
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+  },
+  card: {
+    // backgroundColor: "#FF7C7C",
+    backgroundColor: "white",
+    borderRadius: 10,
+    overflow: "hidden",
+    marginVertical: 10,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    margin: 6,
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    // backgroundColor: "white",
+    borderRadius: 20,
+    paddingLeft: 10,
+    marginTop: 20,
   },
 });

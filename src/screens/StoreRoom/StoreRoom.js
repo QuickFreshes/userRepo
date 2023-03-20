@@ -41,6 +41,32 @@ const StoreRoom = () => {
     setBasketShop(shop);
   }, [shop]);
 
+  useEffect(() => {
+    if (!id) {
+      return;
+    }
+
+    // Query the initial set of products
+    DataStore.query(Product, (p) => p.shopID.eq(id)).then(setProducts);
+
+    // Set up the subscription to changes in the Product model
+    const subscription = DataStore.observe(Product).subscribe((msg) => {
+      const updatedProduct = msg.element;
+      const index = products.findIndex((p) => p.id === updatedProduct.id);
+      if (index !== -1) {
+        // If the product is already in the products array, update it
+        const updatedProducts = [...products];
+        updatedProducts[index] = updatedProduct;
+        setProducts(updatedProducts);
+      } else if (updatedProduct.shopID === id) {
+        // If the product is not in the products array, but belongs to the current shop, add it
+        setProducts([...products, updatedProduct]);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [id, products]);
+
   // Update the products state when an item is removed from the basket
   useEffect(() => {
     const updatedProducts = [...products];
@@ -65,17 +91,26 @@ const StoreRoom = () => {
     );
   }
   // console.log(distance);
+
   return (
     <>
       <View style={{ backgroundColor: "#FCF3CF", flex: 1 }}>
         <SafeAreaView>
-          <FlatList
+          {/* <FlatList
             ListHeaderComponent={() => <StoreRoomHeader shop={shop} />}
             ListFooterComponent={() => <ListFooterComponent />}
             data={products}
             renderItem={({ item }) => <Items Item={item} />}
             keyExtractor={(item) => item.name}
+          /> */}
+          <FlatList
+            ListHeaderComponent={() => <StoreRoomHeader shop={shop} />}
+            ListFooterComponent={() => <ListFooterComponent />}
+            data={products}
+            renderItem={({ item }) => <Items Item={item} key={item.id} />}
+            keyExtractor={(item) => item.id.toString()}
           />
+
           <View style={styles.buttonContainer}>
             {basket && (
               <Pressable

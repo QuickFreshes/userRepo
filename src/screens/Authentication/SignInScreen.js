@@ -31,7 +31,7 @@ const SignInScreen = () => {
     setLoading(true);
     try {
       await Auth.signIn(data.username, data.password);
-      navigation.navigate("Home");
+      // navigation.navigate("Home");
     } catch (e) {
       Alert.alert("Oops", e.message);
     }

@@ -15,51 +15,15 @@ const SearchStores = (props) => {
         })
       }
     >
-      <View
-        style={{
-          margin: 3,
-        }}
-      >
-        <Image
-          style={{
-            width: "100%",
-            aspectRatio: 6 / 4,
-            borderTopLeftRadius: 10,
-            borderTopRightRadius: 10,
-          }}
-          source={{ uri: shops.image }}
-        />
-        <View
-          style={{
-            padding: 10,
-            backgroundColor: "white",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            borderBottomLeftRadius: 10,
-            borderBottomRightRadius: 10,
-          }}
-        >
+      <View style={styles.cardContent}>
+        <Image style={styles.cardImage} source={{ uri: shops.image }} />
+        <View style={styles.cardText}>
           <View>
-            <Text style={{ fontSize: 14, fontWeight: "600" }}>
-              {shops.name}
-            </Text>
-            <Text style={{ fontSize: 15, color: "gray", marginVertical: 7 }}>
-              {shops.location}
-            </Text>
+            <Text style={styles.cardTitle}>{shops.name}</Text>
+            <Text style={styles.cardSubtitle}>{shops.location}</Text>
           </View>
         </View>
-        <View
-          style={{
-            position: "absolute",
-            right: 10,
-            top: 20,
-            backgroundColor: "white",
-            padding: 10,
-            borderRadius: 50,
-            flexDirection: "row",
-          }}
-        >
+        <View style={styles.cardIcon}>
           <AntDesign name="hearto" size={24} color="black" />
         </View>
       </View>
@@ -69,4 +33,50 @@ const SearchStores = (props) => {
 
 export default SearchStores;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  card: {
+    backgroundColor: "white",
+    borderRadius: 10,
+    overflow: "hidden",
+    marginVertical: 10,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    margin: 6,
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+  },
+  cardContent: {
+    // flexDirection: "row",
+    // alignItems: "center",
+    margin: 5,
+  },
+  cardImage: {
+    width: "100%",
+    aspectRatio: 7 / 6,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+  },
+  cardText: {
+    flex: 1,
+    padding: 10,
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 5,
+  },
+  cardSubtitle: {
+    fontSize: 16,
+    color: "#666",
+  },
+  cardIcon: {
+    backgroundColor: "#ffffff",
+    borderRadius: 50,
+    padding: 8,
+  },
+});

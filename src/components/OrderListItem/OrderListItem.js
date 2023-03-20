@@ -1,11 +1,24 @@
 import { StyleSheet, Text, View, Image, Pressable } from "react-native";
 import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
-
+import moment from "moment";
 const OrderListItem = (props) => {
-  const order = props.order;
+  const order = props?.order;
   const navigation = useNavigation();
   // console.log(order);
+  const onPress = () => {
+    navigation.navigate("Order", {
+      // screen: "Details",
+      // params: {
+      id: order.id,
+      shopName: order?.Shop?.name,
+      shopType: order?.Shop?.ShopType,
+      rating: order?.Shop?.rating,
+      address: order?.Shop?.small_address,
+      productsId: order?.OrderProducts?.orderProductProductId,
+      // },
+    });
+  };
 
   const [loadingTime, setLoadingTime] = useState(0);
   useEffect(() => {
@@ -38,16 +51,7 @@ const OrderListItem = (props) => {
   }
   return (
     <Pressable
-      onPress={() =>
-        navigation.navigate("Order", {
-          id: order.id,
-          shopName: order?.Shop?.name,
-          shopType: order?.Shop?.ShopType,
-          rating: order?.Shop?.rating,
-          address: order?.Shop?.small_address,
-          productsId: order?.OrderProducts?.orderProductProductId,
-        })
-      }
+      onPress={onPress}
       style={{
         flexDirection: "row",
         margin: 10,
@@ -76,7 +80,8 @@ const OrderListItem = (props) => {
           </Text>
         </View>
         <Text style={{ color: "#FFD700" }}>
-          {new Date(order?.createdAt).toLocaleDateString()} • {order?.status}
+          {moment(order?.createdAt).fromNow()} • {order?.status}
+          {/* {new Date(order?.createdAt).toLocaleDateString()} • {order?.status} */}
         </Text>
       </View>
     </Pressable>

@@ -8,6 +8,7 @@ const AuthContext = createContext({});
 const AuthContextProvider = ({ children }) => {
   const [authUser, setAuthUser] = useState(null);
   const [dbUser, setDbUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const sub = authUser?.attributes?.sub;
 
   // useEffect(() => {
@@ -22,15 +23,20 @@ const AuthContextProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    DataStore.query(User, (p) => p.sub.eq(sub)).then((users) =>
-      setDbUser(users[0])
-    );
+    if (!sub) {
+      return;
+    }
+    setLoading(true);
+    DataStore.query(User, (p) => p.sub.eq(sub)).then((users) => {
+      setDbUser(users[0]);
+      setLoading(false);
+    });
   }, [sub]);
 
   //   console.log(authUser);
 
   return (
-    <AuthContext.Provider value={{ authUser, dbUser, sub, setDbUser }}>
+    <AuthContext.Provider value={{ authUser, dbUser, sub, setDbUser, loading }}>
       {children}
     </AuthContext.Provider>
   );

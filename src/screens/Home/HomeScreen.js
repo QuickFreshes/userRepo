@@ -4,8 +4,10 @@ import {
   View,
   FlatList,
   Image,
+  TextInput,
   Pressable,
   ScrollView,
+  RefreshControl,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { Shop, User } from "../../models/index";
@@ -19,6 +21,7 @@ import Categories from "../../components/Categories/Categories";
 import Stores from "../../components/Stores/Stores";
 import { useAuthContext } from "../../contexts/AuthContext";
 import CategoriesData from "../../../assets/data/Categories/CategoriesData";
+import Search from "../../components/SearchBar/Search";
 
 // Function to calculate the distance between two coordinates using Haversine formula
 const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
@@ -50,6 +53,11 @@ const HomeScreen = () => {
   const [distances, setDistances] = useState([]);
   const [filterShop, setFilterShop] = useState([]);
   const [sortedShops, setSortedShops] = useState([]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // const onRefresh = React.useCallback(() => {
+  //   setRefreshing(true);
+  //   setSortedShops([]);
   useEffect(() => {
     DataStore.query(User, (p) => p.sub.eq(sub)).then((user) => {
       setSelectedCity((prevSelectedCity) => ({
@@ -59,11 +67,12 @@ const HomeScreen = () => {
         lng: user[0]?.lng,
       }));
     });
+    // setRefreshing(false);
   }, [sub]);
 
   // console.log(selectedCity);
-
-  useEffect(() => {
+  const fetchData = async () => {
+    // useEffect(() => {
     DataStore.query(Shop).then((Shops) => {
       const shopsWithinRange = Shops.filter((shop) => {
         const distance = getDistanceFromLatLonInKm(
@@ -87,6 +96,17 @@ const HomeScreen = () => {
       setShops(shopsWithinRange);
       setDistances(shopDistances);
     });
+  };
+  // , [selectedCity]);
+
+  const onRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchData();
+    setIsRefreshing(false);
+  };
+
+  useEffect(() => {
+    fetchData();
   }, [selectedCity]);
 
   const navigation = useNavigation();
@@ -121,6 +141,10 @@ const HomeScreen = () => {
   }
 
   useEffect(() => {
+    if (!Array.isArray(Shops)) {
+      return;
+    }
+
     const filteredShops = Shops.map((shop, index) => ({
       shop,
       distance: distances[index],
@@ -128,19 +152,39 @@ const HomeScreen = () => {
     setFilterShop(filteredShops);
   }, [Shops, distances]);
 
-  // console.log(Shops);
   useEffect(() => {
+    // function sortShops() {
+    let sortedShops = [];
     try {
-      const sortShops = Shops.sort((a, b) => b.rating - a.rating);
-      setSortedShops(sortShops);
+      let sortedShops = Shops;
+      if (
+        Array.isArray(Shops) &&
+        Shops.some((shop) => shop.rating !== undefined)
+      ) {
+        sortedShops = Shops.sort((a, b) => b.rating - a.rating);
+      }
+      setSortedShops(sortedShops);
     } catch (err) {
       console.log(err);
     }
   }, [Shops]);
 
+  useEffect(() => {
+    if (!Shops) {
+      return;
+    }
+    const subscription = DataStore.observe(Shop).subscribe((msg) => {
+      if (msg.opType === "INSERT" || msg.opType === "UPDATE") {
+        setShops(msg.element);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [Shops]);
+
   return (
-    <View style={{ backgroundColor: "#FCF3CF" }}>
-      <View style={{ backgroundColor: "#FFD700" }}>
+    <View style={{ backgroundColor: "#F9F9F9" }}>
+      <View style={styles.topContainer}>
         <View
           style={{
             margin: 10,
@@ -175,19 +219,23 @@ const HomeScreen = () => {
               size={24}
               color="#000000"
             />
+            {/* <Search /> */}
+            {/* <ScrollView keyboardShouldPersistTaps="always"> */}
+
+            {/* </ScrollView> */}
 
             <Ionicons
               onPress={() => navigation.navigate("NotificationsScreen")}
               name="notifications"
               size={35}
-              color="black"
+              color="#000000"
               style={{ marginLeft: 6 }}
             />
           </View>
           {/* <Categories /> */}
         </View>
       </View>
-      <View style={{ backgroundColor: "#ffe866" }}>
+      <View style={styles.categories}>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           {CategoriesData.map((item, index) => (
             <Pressable
@@ -200,16 +248,9 @@ const HomeScreen = () => {
                   // distance: distances[index],
                 })
               }
-              style={{
-                backgroundColor: "black",
-                marginLeft: 10,
-                marginTop: 10,
-                marginBottom: 10,
-                padding: 5,
-                borderRadius: 7,
-              }}
+              style={styles.onPress}
             >
-              <Text style={{ color: "#FFD700", fontWeight: "500" }}>
+              <Text style={{ color: "#000000", fontWeight: "600" }}>
                 {item.name}
               </Text>
             </Pressable>
@@ -217,17 +258,31 @@ const HomeScreen = () => {
         </ScrollView>
       </View>
       <View
-        style={{ backgroundColor: "#FCF3CF" }}
+        style={styles.bottomHomeContainer}
         showsVerticalScrollIndicator={false}
       >
-        <View style={{ margin: 10 }}>
+        <View style={{ margin: 16 }}>
           <View>
             <View></View>
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              refreshControl={
+                <RefreshControl
+                  refreshing={isRefreshing}
+                  onRefresh={onRefresh}
+                  colors={["#000"]}
+                />
+              }
+            >
               <ListHeaderComponent />
-              {sortedShops.map((shop, index) => (
-                <Stores shop={shop} key={index} distance={distances[index]} />
-              ))}
+              {Array.isArray(sortedShops) &&
+                sortedShops.map((shop, index) => (
+                  <Stores
+                    shop={shop}
+                    key={`${index}-${shop.name}`}
+                    distance={distances[index]}
+                  />
+                ))}
               <ListFooterComponent />
             </ScrollView>
           </View>
@@ -239,4 +294,66 @@ const HomeScreen = () => {
 
 export default HomeScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  categories: {
+    backgroundColor: "#F9F9F9",
+
+    // backgroundColor: "white",
+  },
+  onPress: {
+    marginLeft: 10,
+    marginTop: 10,
+    marginBottom: 10,
+    padding: 8,
+    borderRadius: 7,
+    //  --------------------------------------
+    backgroundColor: "#FFFCE2",
+    borderRadius: 10,
+    overflow: "hidden",
+    marginVertical: 10,
+    elevation: 18,
+    shadowColor: "#1DB954",
+    shadowOffset: {
+      width: 3,
+      height: 80,
+    },
+    margin: 6,
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+  },
+  bottomHomeContainer: {
+    backgroundColor: "#FFFCE2",
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+
+    // backgroundColor: "white",
+    // borderRadius: 10,
+    overflow: "hidden",
+    marginVertical: 10,
+    elevation: 40,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 4,
+      height: 8,
+    },
+    margin: 6,
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+  },
+  topContainer: {
+    backgroundColor: "#FFFCE2",
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    overflow: "hidden",
+    marginVertical: 10,
+    elevation: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    margin: 6,
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+  },
+});

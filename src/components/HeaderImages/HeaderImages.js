@@ -21,7 +21,7 @@ const HeaderImages = () => {
         horizontal={true}
         data={items}
         renderItem={({ item }) => (
-          <Pressable>
+          <Pressable style={styles.ShopFromTopStores}>
             <View style={styles.imageView}>
               <Image
                 style={styles.image}
@@ -44,6 +44,22 @@ const HeaderImages = () => {
 export default React.memo(HeaderImages);
 
 const styles = StyleSheet.create({
+  ShopFromTopStores: {
+    margin: 4,
+    alignItems: "center",
+    backgroundColor: "#F8FFEE",
+    borderRadius: 10,
+    overflow: "hidden",
+    marginVertical: 10,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+  },
   image: {
     height: 170,
     width: 300,

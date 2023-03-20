@@ -66,7 +66,7 @@ const BasketContextProvider = ({ children }) => {
         }
       );
     }
-  }, [basket]);
+  }, [basket, shop]);
 
   const addProductToBasket = async (product, quantity) => {
     // console.log("add dish to basket", product, quantity);
@@ -86,6 +86,48 @@ const BasketContextProvider = ({ children }) => {
     return newBasket;
   };
 
+  useEffect(() => {
+    const basketSubscription = DataStore.observe(Basket).subscribe((msg) => {
+      if (msg.opType === "INSERT" || msg.opType === "UPDATE") {
+        // Update the state of basket
+        setBasket((prevState) => ({ ...prevState, ...msg.element }));
+      } else if (msg.opType === "DELETE") {
+        // Remove the deleted basket from state
+        setBasket(null);
+      }
+    });
+
+    const basketProductSubscription = DataStore.observe(
+      BasketProduct
+    ).subscribe((msg) => {
+      if (msg.opType === "INSERT" || msg.opType === "UPDATE") {
+        // Update the state of basketProducts
+        setBasketProducts((prevState) => {
+          const newBasketProducts = [...prevState];
+          const index = newBasketProducts.findIndex(
+            (bp) => bp.id === msg.element.id
+          );
+          if (index >= 0) {
+            newBasketProducts[index] = msg.element;
+          } else {
+            newBasketProducts.push(msg.element);
+          }
+          return newBasketProducts;
+        });
+      } else if (msg.opType === "DELETE") {
+        // Remove the deleted basket product from state
+        setBasketProducts((prevState) =>
+          prevState.filter((bp) => bp.id !== msg.element.id)
+        );
+      }
+    });
+
+    return () => {
+      basketSubscription.unsubscribe();
+      basketProductSubscription.unsubscribe();
+    };
+  }, []);
+
   // const onPlus = () => {};
 
   // const onMinus = () => {};
@@ -102,7 +144,7 @@ const BasketContextProvider = ({ children }) => {
         shop,
         setBasketProducts,
         totalPrice,
-
+        setTotalPrice,
         // basketsToDelete,
       }}
     >

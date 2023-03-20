@@ -16,5 +16,23 @@
         "QuickFreshesV2": {}
       }
     }
+  },
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-quickfreshesv2-dev-120511-authRole",
+      "UnauthRoleArn": "arn:aws:iam::319689402644:role/amplify-quickfreshesv2-dev-120511-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::319689402644:role/amplify-quickfreshesv2-dev-120511-authRole",
+      "Region": "ap-south-1",
+      "DeploymentBucketName": "amplify-quickfreshesv2-dev-120511-deployment",
+      "UnauthRoleName": "amplify-quickfreshesv2-dev-120511-unauthRole",
+      "StackName": "amplify-quickfreshesv2-dev-120511",
+      "StackId": "arn:aws:cloudformation:ap-south-1:319689402644:stack/amplify-quickfreshesv2-dev-120511/75a153a0-c6e9-11ed-96fd-066de522688a",
+      "AmplifyAppId": "d186wprouo2edi"
+    },
+    "categories": {
+      "auth": {
+        "QuickFreshesV2": {}
+      }
+    }
   }
 }

@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TextInput, Button, Alert } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { DataStore } from "aws-amplify";
 import { User } from "../../models/index";
 import { useAuthContext } from "../../contexts/AuthContext";
@@ -15,10 +15,24 @@ const EditProfile = () => {
   const [phone_number, setPhoneNumber] = useState(dbUser?.phone_number || "");
   const [lat, setLat] = useState(dbUser?.lat + "" || "0");
   const [lng, setLng] = useState(dbUser?.lng + "" || "0");
-
   const { sub, setDbUser } = useAuthContext();
 
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const subscription = DataStore.observe(User).subscribe((msg) => {
+      // Update the user data in the component state whenever a change occurs
+      setDbUser((user) => {
+        if (user?.id === msg.element.id) {
+          return msg.element;
+        }
+        return user;
+      });
+    });
+
+    // Unsubscribe from the observable when the component unmounts
+    return () => subscription.unsubscribe();
+  }, []);
 
   const onSave = async () => {
     if (dbUser) {

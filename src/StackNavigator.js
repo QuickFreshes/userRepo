@@ -36,6 +36,7 @@ import HomeSearch from "./screens/HomeSearch/HomeSearch";
 import EditProfile from "./screens/Profile/EditProfile";
 import OtherPlaces from "./screens/ProductOtherPlaces/OtherPlaces";
 import OrderData from "./screens/OrderData/OrderData";
+import OrderDetailsNavigator from "./OrderDetailsNavigator";
 // Screen Ends
 
 const Tab = createBottomTabNavigator();
@@ -271,7 +272,7 @@ const OrderStackNavigator = () => {
       />
       <OrderStack.Screen
         name="Order"
-        component={OrderDetailsScreen}
+        component={OrderDetailsNavigator}
         options={{ headerShown: false }}
       />
     </OrderStack.Navigator>

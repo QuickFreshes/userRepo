@@ -3,7 +3,7 @@ import {
   Text,
   View,
   Image,
-  FlatList,
+  RefreshControl,
   Pressable,
 } from "react-native";
 import React, { useEffect, useState } from "react";
@@ -19,6 +19,7 @@ import { FontAwesome } from "@expo/vector-icons";
 const SearchScreen = () => {
   const [Shops, setShops] = useState([]);
   const navigation = useNavigation();
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     DataStore.query(Shop).then(setShops);
@@ -27,18 +28,18 @@ const SearchScreen = () => {
   const imageUrl =
     "https://quickfreshesawsbucket.s3.ap-south-1.amazonaws.com/FooterBigImg.png";
   const [showFilterModal, setShowFilterModal] = React.useState(false);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    const refreshedData = await DataStore.query(Shop);
+    setShops(refreshedData);
+    setRefreshing(false);
+  };
+
   return (
-    <View style={{ backgroundColor: "#FCF3CF" }}>
+    <View style={styles.topSearchContainer}>
       <View style={{}}>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "flex-end",
-            padding: 10,
-            backgroundColor: "#FFD700",
-          }}
-        >
+        <View style={styles.backgroundColor}>
           <FontAwesome
             onPress={() => navigation.navigate("HomeSearch")}
             name="search"
@@ -60,45 +61,31 @@ const SearchScreen = () => {
             name="sliders"
             size={27}
             color="white"
-            style={{
-              marginLeft: 6,
-              backgroundColor: "black",
-              padding: 4,
-              marginRight: 7,
-              borderRadius: 7,
-            }}
+            style={styles.slider}
           />
         </View>
         {/* Rendering list starts */}
 
         <ScrollView
-          style={{ marginLeft: 10, marginRight: 10 }}
+          style={styles.scrollContainer}
           contentContainerStyle={{
             flexDirection: "row",
             flexWrap: "wrap",
           }}
           showsVerticalScrollIndicator={false}
-          // style={{ flexDirection: "row", flexWrap: "wrap" }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          }
         >
           {data.map((item, id) => {
             return (
-              <View key={id} style={{ width: "50%", flexDirection: "row" }}>
+              <View key={id} style={styles.cardList}>
                 <SearchStores shop={item} />
               </View>
             );
           })}
 
-          <Image
-            style={{
-              width: 150,
-              height: 120,
-              left: 20,
-              marginTop: 50,
-              marginBottom: 250,
-              borderRadius: 20,
-            }}
-            source={{ uri: imageUrl }}
-          />
+          <Image style={styles.cardImage} source={{ uri: imageUrl }} />
         </ScrollView>
         {/* Rendering list ends */}
       </View>
@@ -108,4 +95,59 @@ const SearchScreen = () => {
 
 export default SearchScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  topSearchContainer: {
+    backgroundColor: "#F9F9F9",
+  },
+  cardImage: {
+    width: 150,
+    height: 120,
+    left: 20,
+    marginTop: 50,
+    marginBottom: 300,
+    borderRadius: 20,
+  },
+  cardList: {
+    width: "50%",
+    flexDirection: "row",
+  },
+  scrollContainer: {
+    marginLeft: 5,
+    marginRight: 5,
+    backgroundColor: "#FFFCE2",
+    padding: 5,
+    // backgroundColor: "#000000",
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+  },
+  slider: {
+    marginLeft: 6,
+    backgroundColor: "black",
+    padding: 8,
+    marginRight: 7,
+    borderRadius: 7,
+    borderBottomRightRadius: 18,
+  },
+  backgroundColor: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    padding: 10,
+    // backgroundColor: "#F9F9F9",
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    backgroundColor: "#FFFCE2",
+    borderRadius: 10,
+    overflow: "hidden",
+    marginVertical: 10,
+    elevation: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    margin: 6,
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+  },
+});

@@ -4,18 +4,18 @@ import {
   View,
   FlatList,
   ActivityIndicator,
+  RefreshControl,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import OrderListItem from "../../components/OrderListItem/OrderListItem";
-// import orders from "../../../assets/data/Orders/orders.json";
 import { useOrderContext } from "../../contexts/OrderContext";
-import { ScrollView } from "react-native-gesture-handler";
 import ListFooterComponent from "../../components/ListFooterComponent/ListFooterComponent";
 import ListHeadOrderComponent from "../../components/ListHeadOrderComponent/ListHeadOrderComponent";
 const OrderScreen = () => {
-  const { orders } = useOrderContext();
+  const { orders, refreshOrders } = useOrderContext();
   // console.log(orders);
   const [loadingTime, setLoadingTime] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
   useEffect(() => {
     const timeout = setTimeout(() => {
       setLoadingTime(loadingTime + 1000);
@@ -23,6 +23,12 @@ const OrderScreen = () => {
 
     return () => clearTimeout(timeout);
   }, [loadingTime]);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await refreshOrders();
+    setRefreshing(false);
+  };
 
   if (!orders) {
     return (
@@ -45,15 +51,23 @@ const OrderScreen = () => {
     );
   }
 
+  orders.sort((a, b) => {
+    return new Date(b.createdAt) - new Date(a.createdAt);
+  });
+
+  // console.log(orders);
   return (
-    <View
-      style={{
-        backgroundColor: "#FCF3CF",
-        flex: 1,
-        width: "100%",
-      }}
-    >
+    <View style={styles.container}>
       <FlatList
+        refreshControl={
+          <RefreshControl
+            colors={["#000"]}
+            // tintColor="#FFD700"
+            // colors={["#9Bd35A", "#689F38"]}
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
         ListHeaderComponent={() => <ListHeadOrderComponent />}
         ListFooterComponent={() => <ListFooterComponent />}
         data={orders}
@@ -67,4 +81,10 @@ const OrderScreen = () => {
 
 export default OrderScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "#FFFCE2",
+    flex: 1,
+    width: "100%",
+  },
+});

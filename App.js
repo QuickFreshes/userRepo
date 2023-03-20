@@ -23,7 +23,7 @@ const App = () => {
   return (
     <View style={styles.container}>
       <GeneralStatusBarColor
-        backgroundColor="#FFD700"
+        backgroundColor="#F8FFEE"
         barStyle="dark-content"
       />
       <AuthContextProvider>

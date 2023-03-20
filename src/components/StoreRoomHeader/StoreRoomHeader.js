@@ -31,7 +31,7 @@ const StoreRoomHeader = ({ shop }) => {
         <View style={{ marginLeft: 10, marginTop: 10 }}>
           <Text style={{ fontSize: 20, fontWeight: "bold", width: 260 }}>
             {/* {route.params.name} */}
-            {shop.name}
+            {shop?.name}
           </Text>
           <Text
             style={{
@@ -43,7 +43,7 @@ const StoreRoomHeader = ({ shop }) => {
             }}
           >
             {/* {route.params.ShopType} */}
-            {shop.ShopType}
+            {shop?.ShopType}
           </Text>
           <Text
             style={{
@@ -54,7 +54,7 @@ const StoreRoomHeader = ({ shop }) => {
             }}
           >
             {/* {route.params.smalladdress} */}
-            {shop.small_address}
+            {shop?.small_address}
           </Text>
         </View>
         {/* StoreRoomHeader Ends */}
@@ -84,7 +84,7 @@ const StoreRoomHeader = ({ shop }) => {
               }}
             >
               {/* {route.params.rating} */}
-              {shop.rating.toFixed(1)}
+              {shop?.rating?.toFixed(1)}
             </Text>
             <AntDesign name="star" size={22} color="#FFD700" />
           </View>

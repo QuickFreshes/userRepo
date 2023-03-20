@@ -13,7 +13,7 @@ const Stores = ({ shop, distance }) => {
     navigation.navigate("StoreRoom", { id: shop.id, distance: distance });
   };
   return (
-    <Pressable onPress={onPress}>
+    <Pressable onPress={onPress} style={styles.mainCard}>
       <View style={{ margin: 3 }}>
         <Image
           style={{
@@ -41,7 +41,7 @@ const Stores = ({ shop, distance }) => {
           }}
         >
           <View>
-            <Text style={{ fontSize: 17, fontWeight: "600", width: 250 }}>
+            <Text style={{ fontSize: 17, fontWeight: "600", width: 230 }}>
               {shop?.name}
             </Text>
             <Text style={{ fontSize: 15, color: "gray", marginVertical: 7 }}>
@@ -61,7 +61,7 @@ const Stores = ({ shop, distance }) => {
             <Text
               style={{
                 color: "#82e0aa",
-                paddingRight: 5,
+                paddingRight: -20,
                 fontSize: 14,
                 fontWeight: "bold",
               }}
@@ -204,4 +204,20 @@ const Stores = ({ shop, distance }) => {
 
 export default Stores;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  mainCard: {
+    backgroundColor: "#FFFCE2",
+    borderRadius: 10,
+    overflow: "hidden",
+    marginVertical: 10,
+    elevation: 6,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    margin: 6,
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+  },
+});

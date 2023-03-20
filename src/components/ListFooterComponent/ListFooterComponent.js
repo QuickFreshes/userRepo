@@ -12,7 +12,7 @@ const ListFooterComponent = () => {
           height: 120,
           left: 20,
           marginTop: 50,
-          marginBottom: 320,
+          marginBottom: 370,
           borderRadius: 20,
         }}
         source={{ uri: imageUrl }}
