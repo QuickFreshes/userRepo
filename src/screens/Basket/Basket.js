@@ -47,82 +47,82 @@ const Basket = () => {
       : undefined;
   }, [sound]);
 
-  const transactionId = "1";
-  const message = `QF Buy`;
-  const payTo = "akaashvakharia@oksbi";
-  const payName = "Akaash";
-  // const currency = "INR";
-  const amount = (40 + 0.95).toFixed(2);
+  // const transactionId = "1";
+  // const message = `QF Buy`;
+  // const payTo = "akaashvakharia@oksbi";
+  // const payName = "Akaash";
+  // // const currency = "INR";
+  // const amount = (totalPrice + 0.95).toFixed(2);
 
-  const upiURl = `upi://pay?pa=${payTo}&pn=${payName}&tr=${transactionId}&tn=${message}&am=${amount}&cu=INR`;
+  // const upiURl = `upi://pay?pa=${payTo}&pn=${payName}&tr=${transactionId}&tn=${message}&am=${amount}&cu=INR`;
 
-  const payMoney = () => {
-    Linking.canOpenURL(upiURl)
-      .then((supported) => {
-        if (!supported) {
-          // console.error("Error opening UPI URL: UPI not supported");
-          Alert.alert(
-            "Error",
-            "No UPI app is installed on the device,try to use G-Pay or Paytm"
-          );
-        } else {
-          Linking.openURL(upiURl)
-            .then(() => {
-              if (Platform.OS === "ios") {
-                Linking.addEventListener("url", handlePaymentResponse);
-              }
-            })
-            .catch((err) => {
-              console.error("Error opening UPI URL:", err);
-              Alert.alert(
-                "Error",
-                "Could not open UPI app. Please try again later."
-              );
-            });
-        }
-      })
+  // const payMoney = () => {
+  //   Linking.canOpenURL(upiURl)
+  //     .then((supported) => {
+  //       if (!supported) {
+  //         // console.error("Error opening UPI URL: UPI not supported");
+  //         Alert.alert(
+  //           "Error",
+  //           "No UPI app is installed on the device,try to use G-Pay or Paytm"
+  //         );
+  //       } else {
+  //         Linking.openURL(upiURl)
+  //           .then(() => {
+  //             if (Platform.OS === "ios") {
+  //               Linking.addEventListener("url", handlePaymentResponse);
+  //             }
+  //           })
+  //           .catch((err) => {
+  //             console.error("Error opening UPI URL:", err);
+  //             Alert.alert(
+  //               "Error",
+  //               "Could not open UPI app. Please try again later."
+  //             );
+  //           });
+  //       }
+  //     })
 
-      .catch((err) => {
-        console.error("Error checking UPI support:", err);
-        Alert.alert(
-          "Error",
-          "Could not check UPI support. Please try again later."
-        );
-      });
-  };
+  //     .catch((err) => {
+  //       console.error("Error checking UPI support:", err);
+  //       Alert.alert(
+  //         "Error",
+  //         "Could not check UPI support. Please try again later."
+  //       );
+  //     });
+  // };
 
-  const handlePaymentResponse = (event) => {
-    // Remove the listener to avoid memory leaks
-    Linking.removeEventListener("url", handlePaymentResponse);
+  // const handlePaymentResponse = (event) => {
+  //   // Remove the listener to avoid memory leaks
+  //   Linking.removeEventListener("url", handlePaymentResponse);
 
-    const { url } = event;
+  //   const { url } = event;
 
-    if (Platform.OS === "android" || url.startsWith("upi")) {
-      // Parse the query params from the URL
-      const queryParams = qs.parse(url.split("?")[1]);
+  //   if (Platform.OS === "android" || url.startsWith("upi")) {
+  //     // Parse the query params from the URL
+  //     const queryParams = qs.parse(url.split("?")[1]);
 
-      if (queryParams.status === "success") {
-        onCreateOrder();
-      } else {
-        Alert.alert(
-          "Payment Failed",
-          "The UPI payment was not successful. Please try again later."
-        );
-      }
-    } else if (Platform.OS === "ios") {
-      const path = url.split("://")[1];
-      const queryParams = qs.parse(path);
+  //     if (queryParams.status === "success") {
+  //       onCreateOrder();
+  //     } else {
+  //       Alert.alert(
+  //         "Payment Failed",
+  //         "The UPI payment was not successful. Please try again later."
+  //       );
+  //     }
+  //   } else if (Platform.OS === "ios") {
+  //     const path = url.split("://")[1];
+  //     const queryParams = qs.parse(path);
 
-      if (queryParams.status === "success") {
-        onCreateOrder();
-      } else {
-        Alert.alert(
-          "Payment Failed",
-          "The UPI payment was not successful. Please try again later."
-        );
-      }
-    }
-  };
+  //     if (queryParams.status === "success") {
+  //       onCreateOrder();
+  //     } else {
+  //       Alert.alert(
+  //         "Payment Failed",
+  //         "The UPI payment was not successful. Please try again later."
+  //       );
+  //     }
+  //   }
+  // };
 
   const onCreateOrder = async () => {
     await createOrder();
@@ -208,7 +208,7 @@ const Basket = () => {
             : "Delivery Fee: N/A"}
         </Text>
       </View>
-      <Pressable onPress={payMoney} style={styles.button}>
+      <Pressable onPress={onCreateOrder} style={styles.button}>
         <Text style={styles.buttonText}>
           Purchase &#8226; ₹{totalPrice?.toFixed(0)}
         </Text>
